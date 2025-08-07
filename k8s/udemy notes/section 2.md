@@ -2,5 +2,3 @@
 
 kubectl get pods # shows info on pods, how many are up and running etc.
 kubectl get rs # shows info on replica sets
-
-#
