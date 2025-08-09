@@ -1,9 +1,4 @@
-# This file is intended as documentation of kubcetl commands in my own language.
-
-kubectl get pods # shows info on pods, how many are up and running etc.
-kubectl get rs # shows info on replica sets
-
----
+# Section 2 Notes
 
 ## Services
 
@@ -38,8 +33,6 @@ spec:
   selector:
      app: myapp
      type: front-end
-
-
 ```
 Notes: port is the only spec necessary. If no TargetPort is assigned, it is assumed to be the same as port. Also, if nodePort isn't assigned, it is randomly assigned between the range of possible values, from 30,000 to 23,767.
 Also, make sure there is a - below ports: , since the ports section is an array. You can have multiple port mappings within a single service.
@@ -136,7 +129,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: dev
-
 ```
 
 Then run
@@ -165,7 +157,6 @@ spec:
     requests.memory: 5Gi
     limits.cpu: '10'
     limits.memory: 10Gi
-
 ```
 
 ### Imperative vs. Declarative
@@ -185,3 +176,8 @@ Imperative commands are really bad for working in large environments where worki
 The declarative approach is way easier to use as an admin. Using the same objects, we use the kubectl apply command to create an object if it doesn't exist. You can specifiy a directory instead of single file as well. Updating objects applies regardless of whether or not the object exists.
 Thus, using apply is best practice.
 
+### Kubectl Apply
+
+This command checks the local file, the last applied config, and the kubernetes definition. So if the object doesn't exist, the object is created, and kubernetes fills out some extra info internally. When you use kubectl appy, the yml is converted to json and is saved in the last applied configuration. So if we update the local file, the last applied config gets updated, and the kubernetes version also gets updated. If something gets deleted in the local file and kubernetes also has that line deleted, the last applied configuration could have that line saved. Only kubectl apply keeps this info.
+
+---
