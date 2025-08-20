@@ -1,5 +1,6 @@
 # lab
 
-This is essentially a text dump of commands, scripts, and notes I've taken while learning to code and run k8s.
-
-It's messy. That's why it's the lab.
+Welcome to William Mumpers' Lab.
+Here you'll find notes, scrap code, and documentation for projects I'm working on.
+Notes are typed in Obsidian and saved here for redundancy.
+Feel free to reach out with questions.
