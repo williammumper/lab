@@ -1,10 +1,9 @@
 # Section 3 Notes
-
 ---
-
-### Manual Scheduling
+## Manual Scheduling
 
 How does a scheduler work? Every pod starts with a nodeName: which is not set by default. The k8s algorithm looks through the pods and finds pods without names to schedule. It then finds the proper node for the pod, then sends that pod to a node by naming it something like node02, binding it to the second node.
+
 If there is no scheduler, what happens? The pods stay in a pending state. Then, you can manually schedule the pod. The easiest way to do this is to create a name for the pod. You can only specify the node name at creation time. If the pod is already created, you can create a binding object then send that to the pods binding API. This looks like:
 
 ```
@@ -23,9 +22,10 @@ target:
 
 curl --header "Content-type:application/json" --request POST --data '{"apiVersion":"v1", "kind":"Binding"...}' http://$SERVER/api/v1/namespaces/pods/$PODNAME/binding
 ```
+
 So, you convert the definition file to json, then send it through a curl request to bind the proper node name to the pod.
 
-### Labels and Selectors
+## Labels and Selectors
 
 Labels and selectors are a standard way of grouping things together.
 Labels are ways of identifiying objects. For the example of colors of animals, we might want to label based on class, kind, and color. These would be labels.
@@ -36,12 +36,11 @@ We might want to be able to view everything in k8s by type, or by application, o
 ```
 kubectl get pods --selector app=App1
 ```
-This finds all the pods with the label App1.
 
+This finds all the pods with the label App1.
 To create a replica set with 3 pods, we want to make the replica set first, then apply the labels for the replica set. We want the label under the replica set field to match the labels defined on the pods. This looks like, for example, both the replica set and the pods having the same app: name. On creation of the replica set, if the labels match, the replica set is created. A service works the same way. Annotations in the definition file can hold on to a version number.
 
-
-### Taints and Tolerations
+## Taints and Tolerations
 
 In this example we don't want a bug to land on a person, so we apply a taint (bugspray) to the person, which the bug is intolerant of. Some bugs are tolerant to that smell, so the taint doesn't affect them.
 So the determining factors for whether a bug can land on a person are the persons taint and the bugs tolerance level. 
@@ -54,11 +53,12 @@ To set a taint:
 ```
 kubectl taint nodes node-name key=value:taint-effect
 ```
+
 taint-effect determines what happens to the pods if they DO NOT tolerate the taint.
 There are THREE taint effects:
-- NoSchedule #pods are not scheduled on this node
-- PreferNoSchedule #system tries to avoid placing pods on node but not guarunteed
-- NoExecute #new pods are not schedueled
+- NoSchedule - pods are not scheduled on this node
+- PreferNoSchedule - system tries to avoid placing pods on node but not guaranteed
+- NoExecute - new pods are not scheduled
 
 Example taint:
 
@@ -67,6 +67,7 @@ kubectl taint nodes node1 app=blue:NoSchedule
 ```
 
 Under spec in pod-definitions add:
+
 ```
 apiVersion: v1
 kind: Pod
@@ -83,13 +84,13 @@ spec:
     value: "blue"
     effect: "NoSchedule"
 ```
+
 For the example of having nodes 1 2 and 3 and pods a b c and d, with node 1 containing c and d and node 2 containing a and node 3 containing b, if we are to add a NoExecute taint to node 1, pod c gets killed and stops running, while pod d stays running, since we configuered it to have a toleration to the taint blue.
 Also, adding a taint means the scheduler won't schedule any pods to a node unless it has the specific taint toleration. 
 Note: the master node has a taint that prevents any pods from being scheduled on the node.
 Best practice is to not deploy workloads on a master server.
 
-
-### Node Selectors
+## Node Selectors
 
 Example: starting with a 3 node cluster, with one large node and two smaller nodes. We want to route a certain dev pod to node 1, since that is the only node with enough processing power to handle that pods' requirements. Under the default selector, this pod can end up anywhere, so it ends up in node 3. In order to solve this, we can set a node selector on the pod, which is the simplist method. The pod definition file can be edited such that the pod gets routed to the correct pod:
 
@@ -114,6 +115,7 @@ To label:
 ```
 kubectl label nodes <node-name> <label-key>=<label-value>
 ```
+
 Example for setting to 'Large':
 
 ```
@@ -123,7 +125,7 @@ kubectl label nodes node-1 size=Large
 Now that we have the node, create the pod, and the node selector will route the pod to the correct node (or nodes).
 What about the case where we have a large or medium node, or any node that is not small. We need node affinity for this.
 
-### Node Affinity
+## Node Affinity
 
 If we want to have OR or NOT selectors for node selection, we need node affinity.
 The yaml for setting a pod definition to go to large nodes using node affinity is:
@@ -150,6 +152,7 @@ affinity:
           values:
           - Large
 ```
+
 Awesome. Say we wanted to also let this pod go to nodes with size value 'medium' as well. We then want to add that to the values section:
 
 ```
@@ -180,10 +183,13 @@ Or conversely if we wanted to have the pod not go in a small node, we can say:
             values:
             - Small
 ```
+
 This acts as a NOT operator on node affinity.
 There are a number of other operators as well, documentation has the list.
 If there is a label on a node that no longer exists, what happens? The answer is based on the *type* of node affinity.
+
 The two types of node affinity (as of the udemy course release) are:
+
 - requiredDuringSchedulingIgnoredDuringExecution
 - prefferedDuringSchedulingIgnoredDuringExecution
 
@@ -191,16 +197,10 @@ DuringScheduling is the state in which a pod does not exist and is created for t
 So, lets say we want to schedule a pod with affinity to large, but none of our nodes have that label. Our type 1 affinity requires that the label exists during pod creation, or else the pod is not scheduled to any nodes. In the case with type 2, or preffered, then if no label matching the affinity is found, our scheduler will simply place the pod on any node according to the scheduler.
 Next, lets look at how DuringExecution behaves. If an admin removes the 'Large' label from our node, then for both types of affinity, the change is 'ignored'. That is, changing the label after the pod has been created won't unschedule the pod from that node.
 In the future there is a plan for a third type of affinity:
+
 - requiredDuringSchedulingRequiredDuringExecution
 
 This type of affinity means any pods running this will be evicted from nodes that do not match the affinity rules. So if our admin decides to change the label on the node, our pod using this type of affinity will be evicted (or terminated. Bottom line: it stops running).
-
-
-
-
-
-
-
 
 
 ---
@@ -212,4 +212,3 @@ To check all objects under a specific environment: (example prod)
 ```
 kubectl get all --selector env=prod
 ```
-
