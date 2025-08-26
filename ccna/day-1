@@ -1,0 +1,53 @@
+# Day 1 Video:
+
+## What is a network?
+
+- A computer network is a digital telecommunications network which allows nodes to share resources.
+- Nodes can be routers (indicated by four arrows, the left and right pointing toward the center and the other arrows pointing up and down). They can be a switch (four arrows, two on the left pointing left and two on the right pointing right). It can be a firewall (a brick wall). It can be a server, or a box with two squares at the top and a small circle at the bottom. It can be a client, which looks like a laptop.
+- Servers and client are often referred to as endpoints or end hosts.
+
+## Building a network
+
+Say we have two pcs and we want to build a network. If we were to connect the two together, we would have a network. All it takes to build a network is two computers!
+
+- A client is a device that accesses a service made available by a server. That means a server can be a computer as well.
+
+In the example case of PC1 asking for a jpg from PC2, if PC2 responds and gives a jpg, which makes PC1 the client and PC2 the server.
+
+Another example is my computer connecting to the internet (represented by a cloud) going to the YouTube server.
+
+Say we're connecting the New York and Tokyo branches of a company. We have two PCs in New York and two servers in Tokyo. The two PCs are connected to a switch and the two servers are also connected to their own unique switch. Switches are used to send traffic over a LAN (local area network). The devices connected over a switch can send data to each other, but these are not connected to the internet. Some notes on switches:
+
+- Catalyst switches are what a lot of enterprise companies use to connect their LAN. 
+- Switches have many interfaces/ports for end hosts to connect to (usually 24+).
+
+Now that we have our switches set up, we can connect them to the internet using a router. So we use the internet to send data from the New York router to the Tokyo router. 
+
+- ISR routers are common routers. They have way less ports, and are used to provide connectivity between LANs.
+
+Since there are attackers on the internet, we want to use a firewall to protect our services. You can have firewalls placed inside or outside your router setup. 
+
+- ASA550-X and Firepower 2100 are examples of CISCO firewalls.
+
+Firewalls monitor traffic based on configured rules. You explicitly set and monitor what traffic is allowed through your network based on these firewalls.
+
+- Host firewalls are firewalls that exist on your host PC.
+
+---
+# Quiz 1
+
+In order to connect 30 PCs together, your department should buy a switch to connect the PCs.
+Correct.
+
+You received a file over Apples AirDrop. The iphone functioned as a server in this transaction.
+Correct.
+
+My computer is operating as an end host and as a client while watching this video.
+Incorrect - only as a client. Although my computer is an end host, its function is not as one, since both servers and clients are end hosts.
+
+---
+
+There are flashcards on Anki that I can use to study.
+
+
+

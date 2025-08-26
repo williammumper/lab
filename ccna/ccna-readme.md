@@ -1,0 +1,1 @@
+These are notes for the Jeremy's IT lab CCNA course on Youtube.
